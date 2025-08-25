@@ -142,12 +142,6 @@ export default function StatsPage() {
           </CardContent>
         </Card>
       </main>
-      <footer className="text-center p-4 text-muted-foreground text-sm">
-         © 2025 ActivaYA. 
-		 <Link href="https://raw.githubusercontent.com/KilianDiaz/ActivaYa/refs/heads/main/manual_de_usuario.pdf" className="underline hover:text-primary ml-2">
-		 Manual de usuario
-		 </Link>
-      </footer>
     </div>
   );
 }
