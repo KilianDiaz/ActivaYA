@@ -322,11 +322,11 @@ const BreakSession: React.FC<BreakSessionProps> = ({ breakId }) => {
             </Button>
             <Button variant="outline" onClick={skipExercise} disabled={hasFinished}>
                 <LucideIcons.SkipForward className="mr-2 h-4 w-4"/>
-                Saltar Ejercicio
+                Saltar
             </Button>
         </div>
         <Button variant="destructive" onClick={skipSession}>
-          <LucideIcons.XCircle className="mr-2 h-4 w-4" /> Terminar Pausa
+          <LucideIcons.XCircle className="mr-2 h-4 w-4" /> Terminar
         </Button>
       </CardFooter>
     </Card>
