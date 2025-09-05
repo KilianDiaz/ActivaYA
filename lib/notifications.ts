@@ -37,12 +37,10 @@ function getNextNotificationTime(breakItem: Pausa): number | null {
     }
   }
 
-  // If no time was found in the next 7 days, it must be next week
   if (!notificationTime) {
       const currentDay = now.getDay();
       let nextDay = -1;
       
-      // Find the first scheduled day after today
       for (const day of sortedDays) {
           if (day > currentDay) {
               nextDay = day;
@@ -50,7 +48,6 @@ function getNextNotificationTime(breakItem: Pausa): number | null {
           }
       }
       
-      // If no day is found later this week, take the first scheduled day of next week
       if (nextDay === -1) {
           nextDay = sortedDays[0];
       }
@@ -93,7 +90,6 @@ export async function scheduleNotification(breakItem: Pausa) {
 
     console.log(`Scheduling notification for '${breakItem.nombre}' at ${new Date(notificationTime).toLocaleString()}.`);
     
-    // Check for `showTrigger` availability (for scheduled notifications)
     if ('showTrigger' in Notification.prototype) {
         try {
           await registration.showNotification('¡Hora de tu pausa activa!', {
@@ -117,9 +113,6 @@ export async function scheduleNotification(breakItem: Pausa) {
             console.error("Error scheduling with Trigger: ", e);
         }
     } else {
-        // Fallback for browsers that don't support showTrigger (e.g., Firefox)
-        // This will show the notification immediately after the delay.
-        // It requires the service worker to be active.
         setTimeout(() => {
             registration.showNotification('¡Hora de tu pausa activa!', {
                 tag: breakItem.id,
@@ -159,12 +152,10 @@ export async function syncAllNotifications(breaks: Pausa[]) {
 
     const currentNotifications = await registration.getNotifications();
     
-    // Cancel all existing notifications
     for(const notification of currentNotifications) {
         notification.close();
     }
 
-    // Schedule new notifications for all active breaks
     for (const breakItem of breaks) {
         if(breakItem.activa) {
             await scheduleNotification(breakItem);
