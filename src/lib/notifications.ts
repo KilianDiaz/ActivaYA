@@ -1,7 +1,6 @@
 "use client";
 import type { Pausa } from './types';
 
-// Store for fallback setTimeout timers
 const timeoutStore: { [key: string]: NodeJS.Timeout } = {};
 
 const dayNameToNumber: { [key: string]: number } = {
@@ -50,7 +49,6 @@ export async function scheduleNotification(breakItem: Pausa) {
     return;
   }
 
-  // Always cancel any existing notification for this break before scheduling a new one.
   await cancelNotification(breakItem.id);
 
   const notificationTime = getNextNotificationTime(breakItem);
@@ -75,14 +73,11 @@ export async function scheduleNotification(breakItem: Pausa) {
         ]
     };
     
-    // @ts-ignore
     if ('showTrigger' in Notification.prototype) {
         try {
-          // @ts-ignore
           await registration.showNotification('¡Hora de tu pausa activa!', {
               ...notificationOptions,
               timestamp: notificationTime,
-              // @ts-ignore
               showTrigger: new TimestampTrigger(notificationTime),
           });
           console.log("Scheduled notification with Trigger.");
@@ -119,27 +114,19 @@ export async function cancelNotification(breakId: string) {
     const registration = await navigator.serviceWorker.ready;
     if (!registration) return;
 
-    // --- CRITICAL FIX: Cancel fallback timer if it exists ---
     if (timeoutStore[breakId]) {
       clearTimeout(timeoutStore[breakId]);
       delete timeoutStore[breakId];
       console.log(`Cleared fallback timer for break ${breakId}`);
     }
-    // ---
-
-    // Cancel visible notifications
     const notifications = await registration.getNotifications({ tag: breakId });
     notifications.forEach(notification => notification.close());
 
-    // Cancel scheduled notifications by overwriting with an expired one.
-    // @ts-ignore
     if ('showTrigger' in Notification.prototype) {
-        // @ts-ignore
         await registration.showNotification('Cancelling notification', {
             tag: breakId,
             body: '',
             silent: true,
-            // @ts-ignore
             showTrigger: new TimestampTrigger(0),
         });
     }
@@ -157,16 +144,13 @@ export async function syncAllNotifications(breaks: Pausa[]) {
       const registration = await navigator.serviceWorker.ready;
       if (!registration) return;
 
-      // Cancel all existing scheduled notifications
       const activeBreakIds = new Set(breaks.map(b => b.id));
       const notifications = await registration.getNotifications();
       for(const notification of notifications) {
           notification.close();
-          // Also try to cancel any potential scheduled notification
           await cancelNotification(notification.tag);
       }
       
-      // Clear all fallback timers
       for (const id in timeoutStore) {
         clearTimeout(timeoutStore[id]);
         delete timeoutStore[id];
