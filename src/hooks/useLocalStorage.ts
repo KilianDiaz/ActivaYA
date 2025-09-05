@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
-// A custom hook that synchronizes state with localStorage and across tabs/windows.
 function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val: T) => T)) => void] {
   
   const [storedValue, setStoredValue] = useState<T>(initialValue);
@@ -22,7 +21,6 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val
         setStoredValue(initialValue);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasMounted, key]);
 
 
@@ -36,7 +34,6 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val
       setStoredValue(valueToStore);
       if (typeof window !== 'undefined') {
         window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        // Manually dispatch a storage event to trigger updates in the same tab
         window.dispatchEvent(new StorageEvent('storage', { key }));
       }
     } catch (error) {
@@ -64,7 +61,6 @@ function useLocalStorage<T>(key: string, initialValue: T): [T, (value: T | ((val
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
 
