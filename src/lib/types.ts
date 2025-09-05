@@ -13,14 +13,14 @@ export interface Pausa {
 export interface Ejercicio {
   nombre: string;
   descripcion: string;
-  duracion: number; // in seconds
-  mediaUrl: string; // path to image or png
+  duracion: number;
+  mediaUrl: string;
 }
 
 export interface Estadisticas {
   pausasCompletadas: number;
   pausasSaltadas: number;
-  tiempoTotalActivo: number; // in seconds
+  tiempoTotalActivo: number;
   conteoPorEjercicio: { [nombreEjercicio: string]: number };
   mediaUrlPorEjercicio: { [nombreEjercicio: string]: string };
   tiempoPorEjercicio: { [nombreEjercicio: string]: number };
